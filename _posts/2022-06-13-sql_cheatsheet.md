@@ -1,6 +1,6 @@
 ---
 title: SQL Cheatsheet
-categories: [SQL]
+categories: [SQL, SQL CheatSheet]
 tags: [sql, t-sql,cheat-sheet]     # TAG names should always be lowercase
 author: 'Babin'
 pin: true
