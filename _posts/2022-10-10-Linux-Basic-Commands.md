@@ -75,12 +75,22 @@ pin: true
         Input: clear
         ```
 
-- To search for our folder inside a specific location we can use the `find`command
-    For Eg:-
+- To search for our folder/file inside a specific location we can use the `find`command
+    - To search for folder
+        For Eg:-
 
-        ```
-        Input: find path -name {folder/directory name}
-        ```
+            ```
+            Input: find path -name {folder/directory name}
+            ```
+    - To search for file
+        For Eg:-
+
+            ```
+            Input: find . -type f -name {filename}
+            ```
+    
+    > We can also use the `locate` command for finding files or folders
+    {: .prompt-tip}
 
 - To create a file we can use the `touch` command
     For Eg:-
