@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">AWS Glue crawler and catalog flow</title>
+  <desc id="desc">Diagram showing a crawler using classifiers to infer schema and write metadata to the AWS Glue Data Catalog.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#93c5fd"/>
+    </marker>
+    <style>
+      .title { font: 700 30px Arial, sans-serif; fill: #f8fafc; }
+      .label { font: 700 22px Arial, sans-serif; fill: #f8fafc; }
+      .small { font: 500 17px Arial, sans-serif; fill: #cbd5e1; }
+      .box { fill: #1f2a44; stroke: #60a5fa; stroke-width: 2.5; rx: 10; }
+      .crawler { fill: #263a26; stroke: #86efac; stroke-width: 2.5; rx: 10; }
+      .catalog { fill: #3a2b16; stroke: #fbbf24; stroke-width: 2.5; rx: 10; }
+      .line { stroke: #93c5fd; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1200" height="620" fill="url(#bg)"/>
+  <text x="54" y="70" class="title">Populating the AWS Glue Data Catalog</text>
+  <text x="54" y="104" class="small">A crawler inspects raw data, applies classifiers, and writes metadata tables</text>
+
+  <rect x="70" y="235" width="205" height="116" class="box"/>
+  <text x="116" y="282" class="label">S3 Data</text>
+  <text x="107" y="314" class="small">CSV, JSON,</text>
+  <text x="104" y="340" class="small">Parquet files</text>
+
+  <rect x="350" y="170" width="215" height="96" class="crawler"/>
+  <text x="405" y="210" class="label">Crawler</text>
+  <text x="386" y="240" class="small">Connects to source</text>
+
+  <rect x="350" y="350" width="215" height="96" class="crawler"/>
+  <text x="396" y="390" class="label">Classifier</text>
+  <text x="388" y="420" class="small">Infers file schema</text>
+
+  <rect x="640" y="235" width="220" height="116" class="catalog"/>
+  <text x="680" y="282" class="label">Data Catalog</text>
+  <text x="686" y="314" class="small">Database and</text>
+  <text x="692" y="340" class="small">table metadata</text>
+
+  <rect x="925" y="170" width="215" height="96" class="box"/>
+  <text x="984" y="210" class="label">Glue Job</text>
+  <text x="962" y="240" class="small">Reads catalog table</text>
+
+  <rect x="925" y="350" width="215" height="96" class="box"/>
+  <text x="986" y="390" class="label">Athena</text>
+  <text x="959" y="420" class="small">Queries catalog table</text>
+
+  <path d="M275 293 C310 293 320 218 350 218" class="line"/>
+  <path d="M458 266 L458 350" class="line"/>
+  <path d="M565 398 C610 398 602 293 640 293" class="line"/>
+  <path d="M860 293 C895 293 895 218 925 218" class="line"/>
+  <path d="M860 293 C895 293 895 398 925 398" class="line"/>
+</svg>

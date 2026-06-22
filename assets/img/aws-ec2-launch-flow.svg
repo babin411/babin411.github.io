@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Amazon EC2 launch flow</title>
+  <desc id="desc">A diagram showing the main steps used to launch an EC2 instance: choose AMI, instance type, network, storage, tags, security group, key pair, and running instance.</desc>
+  <rect width="1200" height="520" fill="#f7f9fb"/>
+  <rect x="44" y="44" width="1112" height="432" rx="18" fill="#ffffff" stroke="#d8dee8" stroke-width="2"/>
+  <text x="80" y="102" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#1f2937">Launching an EC2 Instance</text>
+  <text x="80" y="135" font-family="Arial, sans-serif" font-size="18" fill="#526070">Each launch decision defines how the virtual server will boot, connect, store data, and receive traffic.</text>
+  <g font-family="Arial, sans-serif">
+    <g transform="translate(80 190)">
+      <rect width="126" height="112" rx="10" fill="#fff7ed" stroke="#f59e0b" stroke-width="2"/>
+      <text x="63" y="48" text-anchor="middle" font-size="18" font-weight="700" fill="#92400e">AMI</text>
+      <text x="63" y="76" text-anchor="middle" font-size="13" fill="#92400e">OS + software</text>
+    </g>
+    <g transform="translate(218 190)">
+      <rect width="126" height="112" rx="10" fill="#ecfeff" stroke="#06b6d4" stroke-width="2"/>
+      <text x="63" y="41" text-anchor="middle" font-size="18" font-weight="700" fill="#155e75">Instance</text>
+      <text x="63" y="65" text-anchor="middle" font-size="18" font-weight="700" fill="#155e75">Type</text>
+      <text x="63" y="91" text-anchor="middle" font-size="13" fill="#155e75">CPU + memory</text>
+    </g>
+    <g transform="translate(356 190)">
+      <rect width="126" height="112" rx="10" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+      <text x="63" y="48" text-anchor="middle" font-size="18" font-weight="700" fill="#166534">Network</text>
+      <text x="63" y="76" text-anchor="middle" font-size="13" fill="#166534">VPC + subnet</text>
+    </g>
+    <g transform="translate(494 190)">
+      <rect width="126" height="112" rx="10" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="63" y="48" text-anchor="middle" font-size="18" font-weight="700" fill="#5b21b6">Storage</text>
+      <text x="63" y="76" text-anchor="middle" font-size="13" fill="#5b21b6">EBS volumes</text>
+    </g>
+    <g transform="translate(632 190)">
+      <rect width="126" height="112" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+      <text x="63" y="48" text-anchor="middle" font-size="18" font-weight="700" fill="#991b1b">Tags</text>
+      <text x="63" y="76" text-anchor="middle" font-size="13" fill="#991b1b">Name, app, env</text>
+    </g>
+    <g transform="translate(770 190)">
+      <rect width="126" height="112" rx="10" fill="#eef2ff" stroke="#6366f1" stroke-width="2"/>
+      <text x="63" y="41" text-anchor="middle" font-size="18" font-weight="700" fill="#3730a3">Security</text>
+      <text x="63" y="65" text-anchor="middle" font-size="18" font-weight="700" fill="#3730a3">Group</text>
+      <text x="63" y="91" text-anchor="middle" font-size="13" fill="#3730a3">Firewall rules</text>
+    </g>
+    <g transform="translate(908 190)">
+      <rect width="126" height="112" rx="10" fill="#fdf4ff" stroke="#d946ef" stroke-width="2"/>
+      <text x="63" y="48" text-anchor="middle" font-size="18" font-weight="700" fill="#86198f">Key Pair</text>
+      <text x="63" y="76" text-anchor="middle" font-size="13" fill="#86198f">SSH access</text>
+    </g>
+    <g transform="translate(1046 190)">
+      <rect width="70" height="112" rx="10" fill="#111827"/>
+      <circle cx="35" cy="35" r="16" fill="#f59e0b"/>
+      <rect x="20" y="61" width="30" height="24" rx="4" fill="#60a5fa"/>
+      <text x="35" y="103" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">EC2</text>
+    </g>
+    <g stroke="#94a3b8" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M206 246h12"/>
+      <path d="M344 246h12"/>
+      <path d="M482 246h12"/>
+      <path d="M620 246h12"/>
+      <path d="M758 246h12"/>
+      <path d="M896 246h12"/>
+      <path d="M1034 246h12"/>
+    </g>
+    <text x="80" y="374" font-size="18" font-weight="700" fill="#1f2937">A good launch is intentional.</text>
+    <text x="80" y="405" font-size="16" fill="#526070">Choose the smallest practical instance, open only required ports, protect the key pair, and automate repeatable setup with user data, launch templates, or custom AMIs.</text>
+  </g>
+</svg>

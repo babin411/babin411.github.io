@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">AWS Glue architecture overview</title>
+  <desc id="desc">Diagram showing data sources connected to AWS Glue Data Catalog, crawlers, ETL jobs, and analytics services.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102030"/>
+      <stop offset="0.55" stop-color="#16223b"/>
+      <stop offset="1" stop-color="#1f2937"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7dd3fc"/>
+    </marker>
+    <style>
+      .label { font: 700 28px Arial, sans-serif; fill: #f8fafc; }
+      .small { font: 500 18px Arial, sans-serif; fill: #cbd5e1; }
+      .box { fill: #182b43; stroke: #38bdf8; stroke-width: 2.5; rx: 10; }
+      .accent { fill: #0f766e; stroke: #5eead4; stroke-width: 2.5; rx: 10; }
+      .job { fill: #3b2f16; stroke: #fbbf24; stroke-width: 2.5; rx: 10; }
+      .line { stroke: #7dd3fc; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .muted { stroke: #64748b; stroke-width: 2; fill: none; }
+    </style>
+  </defs>
+  <rect width="1200" height="680" fill="url(#bg)"/>
+  <text x="52" y="70" class="label">AWS Glue Data Integration Flow</text>
+  <text x="52" y="104" class="small">Catalog metadata, run serverless ETL, and query curated datasets</text>
+
+  <rect x="60" y="170" width="220" height="96" class="box"/>
+  <text x="92" y="212" class="label" font-size="24">Data Sources</text>
+  <text x="92" y="240" class="small">S3, JDBC, streams</text>
+
+  <rect x="60" y="350" width="220" height="96" class="box"/>
+  <text x="92" y="392" class="label" font-size="24">Data Targets</text>
+  <text x="92" y="420" class="small">S3, data lake, DBs</text>
+
+  <rect x="405" y="150" width="260" height="126" class="accent"/>
+  <text x="456" y="198" class="label" font-size="24">Crawlers</text>
+  <text x="438" y="230" class="small">Infer schema and</text>
+  <text x="454" y="256" class="small">create tables</text>
+
+  <rect x="405" y="344" width="260" height="126" class="accent"/>
+  <text x="438" y="392" class="label" font-size="24">Data Catalog</text>
+  <text x="442" y="424" class="small">Databases, tables,</text>
+  <text x="464" y="450" class="small">partitions</text>
+
+  <rect x="800" y="184" width="270" height="126" class="job"/>
+  <text x="862" y="232" class="label" font-size="24">ETL Jobs</text>
+  <text x="846" y="264" class="small">PySpark, Scala, visual</text>
+  <text x="892" y="290" class="small">transforms</text>
+
+  <rect x="800" y="406" width="270" height="126" class="box"/>
+  <text x="842" y="454" class="label" font-size="24">Analytics</text>
+  <text x="840" y="486" class="small">Athena, EMR, Redshift</text>
+  <text x="882" y="512" class="small">Spectrum</text>
+
+  <path d="M280 218 C335 218 350 212 405 212" class="line"/>
+  <path d="M535 276 L535 344" class="line"/>
+  <path d="M665 407 C725 407 740 247 800 247" class="line"/>
+  <path d="M935 310 L935 406" class="line"/>
+  <path d="M800 247 C710 247 690 398 665 398" class="muted"/>
+  <path d="M800 247 C690 247 400 398 280 398" class="line"/>
+  <path d="M280 398 C335 398 350 407 405 407" class="line"/>
+  <path d="M1070 469 C1125 469 1125 120 1030 120 L170 120 C80 120 80 170 80 170" class="muted"/>
+</svg>

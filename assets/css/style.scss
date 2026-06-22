@@ -1,0 +1,41 @@
+---
+---
+
+@import "jekyll-theme-chirpy";
+
+.post-content h2 .anchor i,
+.post-content h3 .anchor i,
+.post-content h4 .anchor i,
+.post-content h5 .anchor i {
+  font-family: inherit;
+}
+
+.post-content h2 .anchor i::before,
+.post-content h3 .anchor i::before,
+.post-content h4 .anchor i::before,
+.post-content h5 .anchor i::before {
+  content: "#";
+}
+
+.post-content blockquote[class^="prompt-"]::before {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.post-content blockquote.prompt-info::before {
+  content: "i";
+}
+
+.post-content blockquote.prompt-tip::before {
+  content: "+";
+}
+
+.post-content blockquote.prompt-warning::before {
+  content: "!";
+}
+
+.post-content blockquote.prompt-danger::before {
+  content: "!";
+}
