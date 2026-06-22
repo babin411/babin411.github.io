@@ -160,7 +160,7 @@ This is the one of the most interesting types of regularization techniques. It a
 To understand dropout, let's say our neural network structure is shown as below: 
 ![img](/assets/img/before_dropout.png)
 So what does dropout do? At every iteration, it randomly selects some nodes and removes them along with all of their incoming and outgoing connections as shown below.
-![image-2.png](after_dropout.png)
+<!-- ![image-2.png](after_dropout.png) -->
 So each iteration has a different set of nodes and this results in a different set of outputs. It can also be thought of as an ensemble technique in machine learning.
 
 Ensemble models usually perform better than a single model as they capture more randomness. Similarly, dropout also performs better than a normal neural network model.
