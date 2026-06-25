@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">Amazon S3 versioning</title>
+  <desc id="desc">A diagram showing multiple versions of the same S3 object key kept inside one bucket.</desc>
+  <rect width="1200" height="560" fill="#f8fafc"/>
+  <text x="70" y="82" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#1f2937">S3 Versioning</text>
+  <text x="70" y="116" font-family="Arial, sans-serif" font-size="18" fill="#526070">Versioning keeps multiple versions of an object with the same key, helping recover from accidental overwrites and deletes.</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="88" y="170" width="1024" height="300" rx="18" fill="#ffffff" stroke="#d8dee8" stroke-width="2"/>
+    <rect x="128" y="220" width="240" height="190" rx="14" fill="#fff7ed" stroke="#f59e0b" stroke-width="2"/>
+    <text x="248" y="264" text-anchor="middle" font-size="24" font-weight="700" fill="#92400e">report.csv</text>
+    <text x="248" y="296" text-anchor="middle" font-size="15" fill="#92400e">object key</text>
+    <path d="M390 315h96" stroke="#64748b" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+    <rect x="520" y="212" width="172" height="64" rx="10" fill="#ecfdf5" stroke="#22c55e" stroke-width="2"/>
+    <text x="606" y="251" text-anchor="middle" font-size="18" font-weight="700" fill="#166534">Version 3</text>
+    <rect x="520" y="296" width="172" height="64" rx="10" fill="#eef2ff" stroke="#6366f1" stroke-width="2"/>
+    <text x="606" y="335" text-anchor="middle" font-size="18" font-weight="700" fill="#3730a3">Version 2</text>
+    <rect x="520" y="380" width="172" height="64" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+    <text x="606" y="419" text-anchor="middle" font-size="18" font-weight="700" fill="#991b1b">Version 1</text>
+    <rect x="784" y="234" width="238" height="152" rx="14" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+    <text x="903" y="278" text-anchor="middle" font-size="21" font-weight="700" fill="#334155">Recovery</text>
+    <text x="903" y="311" text-anchor="middle" font-size="15" fill="#334155">restore an older version</text>
+    <text x="903" y="337" text-anchor="middle" font-size="15" fill="#334155">or remove delete markers</text>
+    <text x="70" y="515" font-size="17" fill="#526070">Once enabled, versioning can be suspended for new writes, but existing versions remain until lifecycle rules or explicit deletion remove them.</text>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+</svg>

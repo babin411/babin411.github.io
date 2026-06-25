@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">S3 static website hosting lab</title>
+  <desc id="desc">Diagram showing local website files uploaded to S3 and served through a website endpoint.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="1" stop-color="#1f2937"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#67e8f9"/>
+    </marker>
+    <style>
+      .title { font: 700 30px Arial, sans-serif; fill: #f8fafc; }
+      .label { font: 700 24px Arial, sans-serif; fill: #f8fafc; }
+      .small { font: 500 18px Arial, sans-serif; fill: #cbd5e1; }
+      .box { fill: #172554; stroke: #93c5fd; stroke-width: 2.5; rx: 10; }
+      .s3 { fill: #14352d; stroke: #5eead4; stroke-width: 2.5; rx: 10; }
+      .line { stroke: #67e8f9; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1200" height="620" fill="url(#bg)"/>
+  <text x="54" y="72" class="title">Lab 1: S3 Static Website Hosting</text>
+  <text x="54" y="108" class="small">Upload static assets, enable website hosting, and test the endpoint</text>
+
+  <rect x="90" y="245" width="220" height="120" class="box"/>
+  <text x="138" y="292" class="label">Local Files</text>
+  <text x="126" y="326" class="small">index.html, CSS, JS</text>
+
+  <rect x="490" y="245" width="240" height="120" class="s3"/>
+  <text x="550" y="292" class="label">S3 Bucket</text>
+  <text x="530" y="326" class="small">Static website hosting</text>
+
+  <rect x="910" y="245" width="220" height="120" class="box"/>
+  <text x="968" y="292" class="label">Browser</text>
+  <text x="946" y="326" class="small">Website endpoint</text>
+
+  <path d="M310 305 L490 305" class="line"/>
+  <path d="M730 305 L910 305" class="line"/>
+</svg>

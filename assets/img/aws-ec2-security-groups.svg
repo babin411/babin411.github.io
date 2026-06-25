@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">EC2 security group rules</title>
+  <desc id="desc">A diagram showing users on the internet reaching an EC2 instance through a security group that allows SSH on port 22 and HTTP on port 80.</desc>
+  <rect width="1200" height="560" fill="#f8fafc"/>
+  <text x="70" y="78" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#1f2937">Security Groups: the EC2 Firewall Layer</text>
+  <text x="70" y="112" font-family="Arial, sans-serif" font-size="18" fill="#526070">Only traffic matching an allow rule reaches the instance. Everything else is denied before the server sees it.</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="78" y="196" width="190" height="120" rx="16" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+    <circle cx="132" cy="246" r="28" fill="#38bdf8"/>
+    <circle cx="132" cy="236" r="9" fill="#075985"/>
+    <path d="M108 287c6-20 42-20 48 0" fill="#075985"/>
+    <text x="185" y="250" font-size="23" font-weight="700" fill="#075985">Internet</text>
+    <text x="185" y="278" font-size="14" fill="#075985">browser / SSH client</text>
+    <rect x="478" y="150" width="270" height="260" rx="18" fill="#ffffff" stroke="#64748b" stroke-width="3"/>
+    <text x="613" y="194" text-anchor="middle" font-size="25" font-weight="700" fill="#334155">Security Group</text>
+    <rect x="516" y="226" width="194" height="44" rx="8" fill="#dcfce7" stroke="#22c55e"/>
+    <text x="613" y="254" text-anchor="middle" font-size="17" font-weight="700" fill="#166534">ALLOW SSH : 22</text>
+    <rect x="516" y="286" width="194" height="44" rx="8" fill="#dcfce7" stroke="#22c55e"/>
+    <text x="613" y="314" text-anchor="middle" font-size="17" font-weight="700" fill="#166534">ALLOW HTTP : 80</text>
+    <rect x="516" y="346" width="194" height="44" rx="8" fill="#fee2e2" stroke="#ef4444"/>
+    <text x="613" y="374" text-anchor="middle" font-size="17" font-weight="700" fill="#991b1b">DENY EVERYTHING ELSE</text>
+    <rect x="934" y="190" width="170" height="156" rx="16" fill="#111827"/>
+    <rect x="974" y="225" width="90" height="58" rx="8" fill="#60a5fa"/>
+    <rect x="988" y="242" width="62" height="8" rx="4" fill="#dbeafe"/>
+    <rect x="988" y="259" width="42" height="8" rx="4" fill="#dbeafe"/>
+    <circle cx="1019" cy="315" r="13" fill="#f59e0b"/>
+    <text x="1019" y="382" text-anchor="middle" font-size="22" font-weight="700" fill="#111827">EC2 Instance</text>
+    <path d="M280 256h178" stroke="#0ea5e9" stroke-width="5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M748 256h166" stroke="#22c55e" stroke-width="5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M748 350c72 42 122 42 166 6" stroke="#ef4444" stroke-width="5" fill="none" stroke-dasharray="12 10"/>
+    <text x="322" y="236" font-size="16" fill="#0369a1">request</text>
+    <text x="789" y="236" font-size="16" fill="#166534">allowed traffic</text>
+    <text x="806" y="410" font-size="16" fill="#991b1b">blocked traffic</text>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
+    </marker>
+  </defs>
+</svg>
