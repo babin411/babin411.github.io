@@ -6,8 +6,8 @@ author: 'Babin'
 pin: false
 math: false
 image:
-  path: /assets/img/aws-cloud-banner.png
-  alt: AWS cloud infrastructure banner
+  path: /assets/img/aws-glue-architecture.svg
+  alt: AWS Glue serverless ETL architecture
 ---
 
 AWS Glue is a serverless data integration service for discovering, preparing, transforming, and moving data. It is commonly used in data lake pipelines where raw files land in Amazon S3, metadata is registered in the AWS Glue Data Catalog, transformations run through Glue ETL jobs, and the cleaned data is queried by services such as Amazon Athena, Amazon EMR, or Amazon Redshift Spectrum.
@@ -32,6 +32,9 @@ Glue is useful when we need to:
 ![AWS Glue architecture overview](/assets/img/aws-glue-architecture.svg)
 _AWS Glue connects data sources, metadata, ETL jobs, and analytics services_
 
+![AWS Glue overview from the original Notion notes](/assets/img/aws/notion/glue/glue-overview.png)
+_Glue Data Catalog, jobs, scripts, and scheduling from the original Notion page_
+
 At the center of Glue is the **AWS Glue Data Catalog**. Jobs, crawlers, Athena, EMR, and other analytics services can use the catalog to understand where data lives and what shape it has.
 
 > The Glue Data Catalog stores metadata. The actual data stays in its source system, such as S3, RDS, Redshift, or another supported store.
@@ -53,6 +56,17 @@ Glue is especially helpful for data lake workflows:
 6. Athena or another analytics engine queries the curated data.
 
 This makes Glue a natural fit for bronze, silver, and gold data lake patterns.
+
+## Populating the Data Catalog
+
+The prerequisite for most Glue ETL jobs is a populated **AWS Glue Data Catalog**. In the Notion notes, the catalog is populated with crawlers:
+
+- A crawler connects to a data store such as S3.
+- Built-in or custom classifiers inspect the files.
+- Glue infers the schema and creates metadata in the Data Catalog.
+- The crawler can run on demand, on a schedule, or after an event.
+
+The crawler determines table structure and partitions, but it does not model relationships between tables like a relational database design tool. Its job is to make datasets discoverable and queryable by Glue, Athena, EMR, and other services.
 
 ## Core AWS Glue Components
 
@@ -306,6 +320,8 @@ For multi-step pipelines, Glue workflows help coordinate crawlers, jobs, and tri
 
 Older Glue material often mentions development endpoints. The more modern path for interactive development is **AWS Glue interactive sessions**, which let us use notebooks and local Jupyter kernels with Glue's serverless Spark infrastructure.
 
+In the original notes, a **Glue development endpoint** is described as an environment for developing and testing Glue scripts from a local machine or terminal without creating a full Glue job each time. The important warning is cost: development endpoints can be expensive if left running.
+
 For day-to-day development:
 
 - Keep Glue scripts in version control.
@@ -334,3 +350,7 @@ For a cleaner Glue setup:
 AWS Glue brings together cataloging, crawling, Spark-based ETL, job scheduling, and pipeline orchestration in a managed service. The key idea is simple: catalog the data, transform it with jobs, write it in an analytics-friendly layout, and let downstream tools query the curated result.
 
 Once the Data Catalog, crawler behavior, S3 layout, partitions, IAM role, and job script are clear, Glue becomes a practical foundation for data lake pipelines on AWS.
+
+## Source Notes
+
+Based on my Notion notes: [Amazon Glue](https://app.notion.com/p/2861d99426b647698c087ab4e4ebbaae).

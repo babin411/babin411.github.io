@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#111827"/>
+  <text x="600" y="92" text-anchor="middle" fill="#f8fafc" font-family="Arial, sans-serif" font-size="54" font-weight="700">ADF DevOps</text>
+  <rect x="112" y="220" width="230" height="150" rx="20" fill="#1f2937" stroke="#94a3b8" stroke-width="4"/>
+  <rect x="485" y="170" width="230" height="250" rx="22" fill="#1e3a8a" stroke="#93c5fd" stroke-width="4"/>
+  <rect x="858" y="220" width="230" height="150" rx="20" fill="#14532d" stroke="#86efac" stroke-width="4"/>
+  <text x="227" y="307" text-anchor="middle" fill="#e5e7eb" font-family="Arial, sans-serif" font-size="29" font-weight="700">Repo</text>
+  <text x="600" y="282" text-anchor="middle" fill="#dbeafe" font-family="Arial, sans-serif" font-size="29" font-weight="700">Publish</text>
+  <text x="600" y="330" text-anchor="middle" fill="#bfdbfe" font-family="Arial, sans-serif" font-size="25">ARM / CI/CD</text>
+  <text x="973" y="307" text-anchor="middle" fill="#dcfce7" font-family="Arial, sans-serif" font-size="29" font-weight="700">Deploy</text>
+  <path d="M365 295h92M738 295h92" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
+</svg>

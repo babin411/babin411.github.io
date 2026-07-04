@@ -6,8 +6,8 @@ author: 'Babin'
 pin: false
 math: false
 image:
-  path: /assets/img/aws-cloud-banner.png
-  alt: AWS cloud infrastructure banner
+  path: /assets/img/aws-lambda-serverless-flow.svg
+  alt: AWS Lambda serverless invocation flow
 ---
 
 AWS Lambda is a serverless compute service that lets us run code without provisioning or managing servers. We write a function, configure how it should be invoked, give it permissions through IAM, and AWS runs the code on our behalf.
@@ -132,6 +132,9 @@ For example, when a user uploads an object to S3, S3 can publish an `ObjectCreat
 
 ![S3 to Lambda to DynamoDB pattern](/assets/img/aws-lambda-s3-dynamodb.svg)
 _S3 object events can invoke Lambda, which can process the file and write results downstream_
+
+![S3 event invoking AWS Lambda from the Notion notes](/assets/img/aws/notion/lambda/lambda-s3-trigger.png)
+_S3 object creation invoking Lambda from the original Notion page_
 
 ---
 
@@ -392,3 +395,7 @@ AWS Lambda is a strong fit for serverless, event-driven workloads. It lets us fo
 | **Timeout** | Maximum invocation duration, up to 15 minutes |
 
 Lambda is not a replacement for every compute workload, but for event-driven glue code, lightweight APIs, automation, and file-processing workflows, it is one of the most useful services in AWS.
+
+## Source Notes
+
+Based on my Notion notes: [AWS Lambda](https://app.notion.com/p/104ba2c8521647b08c2e4706a9d3776d).

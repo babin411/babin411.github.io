@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <text x="600" y="92" text-anchor="middle" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="54" font-weight="700">Monitoring and Operations</text>
+  <rect x="120" y="172" width="960" height="330" rx="24" fill="#111827" stroke="#64748b" stroke-width="4"/>
+  <polyline points="180,420 310,360 440,385 570,260 700,300 830,230 1000,250" fill="none" stroke="#38bdf8" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="570" cy="260" r="16" fill="#fbbf24"/>
+  <circle cx="830" cy="230" r="16" fill="#f97316"/>
+  <text x="250" y="235" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="28">Runs</text>
+  <text x="250" y="285" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="28">Logs</text>
+  <text x="250" y="335" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="28">Alerts</text>
+</svg>

@@ -6,8 +6,8 @@ author: 'Babin'
 pin: false
 math: false
 image:
-  path: /assets/img/aws-cloud-banner.png
-  alt: AWS cloud infrastructure banner
+  path: /assets/img/aws-rds-managed-responsibility.svg
+  alt: Amazon RDS managed database responsibility model
 ---
 
 Amazon RDS, short for **Amazon Relational Database Service**, is AWS's managed service for running relational databases in the cloud. Instead of installing database software on an EC2 instance and managing the operating system, patching, backups, and failover ourselves, RDS gives us a managed database environment where AWS handles much of the operational work.
@@ -35,6 +35,9 @@ RDS simplifies this by providing a managed database service. AWS takes care of c
 
 ![Amazon RDS managed responsibility model](/assets/img/aws-rds-managed-responsibility.svg)
 _Amazon RDS manages infrastructure and operations, while users manage application-level database design_
+
+![RDS managed database and Multi-AZ screenshot from Notion](/assets/img/aws/notion/rds/rds-managed-multi-az.png)
+_Managed RDS and Multi-AZ notes from the original Notion page_
 
 ## What AWS Manages
 
@@ -89,6 +92,18 @@ Depending on the database engine, licensing can work in different ways:
 - **Bring Your Own License (BYOL)** — We bring an existing eligible license.
 
 This matters most for commercial engines such as Oracle and Microsoft SQL Server.
+
+---
+
+## RDS Limits
+
+The Notion notes call out a practical account-level limit that is easy to forget during labs and experiments:
+
+- An AWS account can create up to **40 RDS DB instances** by default.
+- When using AWS-provided licenses for Oracle or Microsoft SQL Server, only **10** of those can be Oracle or SQL Server instances.
+- With a Bring Your Own License model, the commercial-engine split can be different because the licensing responsibility moves to the customer.
+
+These limits matter when we create multiple demo databases, restore snapshots into new instances, or leave old test databases running.
 
 ---
 
@@ -409,3 +424,7 @@ Amazon RDS is the standard AWS service for running managed relational databases.
 | **Security groups** | Control network access to the database port |
 
 RDS is a strong default for relational workloads because it gives us managed operations without forcing us to abandon familiar database engines and SQL-based application patterns.
+
+## Source Notes
+
+Based on my Notion notes: [Amazon RDS](https://app.notion.com/p/ce2e03f898e94fd9b9ae457ec28c2eeb).

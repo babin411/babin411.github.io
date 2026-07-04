@@ -6,8 +6,8 @@ author: 'Babin'
 pin: false
 math: false
 image:
-  path: /assets/img/aws-cloud-banner.png
-  alt: AWS cloud infrastructure banner
+  path: /assets/img/aws-ec2-launch-flow.svg
+  alt: AWS EC2 instance launch flow
 ---
 
 Amazon EC2, short for **Elastic Compute Cloud**, is the AWS service used to create and manage virtual servers in the cloud. In a traditional data center, applications usually run on physical servers owned by the organization. In AWS, we rent virtual servers called **EC2 instances**, deploy applications on them, and pay for the compute capacity while those instances are running.
@@ -49,6 +49,9 @@ _The major decisions involved while launching an EC2 instance_
 ## Creating Our First EC2 Instance
 
 To create an EC2 instance, open the AWS Console, search for **EC2**, and go to the EC2 dashboard. From there, click **Launch instance**. AWS then asks for a set of launch configuration choices.
+
+![EC2 dashboard in the AWS console](/assets/img/aws/notion/ec2/ec2-dashboard.png)
+_The EC2 dashboard from the original Notion notes_
 
 ### Step 1: Choose an AMI
 
@@ -505,3 +508,7 @@ EC2 is one of the most important building blocks in AWS. It gives us flexible vi
 | **Elastic IP** | Provides a stable public IP address |
 
 Once these pieces make sense, EC2 becomes much less mysterious. It is simply a virtual server platform, surrounded by AWS-native controls for networking, identity, security, storage, automation, and scaling.
+
+## Source Notes
+
+Based on my Notion notes: [Getting up and running with Virtual Servers in AWS - EC2](https://app.notion.com/p/e9e06733afc84f12b7057b1b987237b0).

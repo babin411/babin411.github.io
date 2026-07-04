@@ -6,7 +6,7 @@ author: 'Babin'
 pin: false
 math: false
 image:
-  path: /assets/img/aws-cloud-banner.png
+  path: /assets/img/aws-availability-zones.png
   alt: AWS Global Infrastructure - Regions and Availability Zones
 ---
 
@@ -255,3 +255,7 @@ Understanding these foundational concepts is the first step to building reliable
 
 > If you found this helpful, check out the rest of the AWS series for deeper dives into compute, storage, networking, and data services on AWS.
 {: .prompt-info }
+
+## Source Notes
+
+Based on my Notion notes: [Getting Started with Cloud and AWS Regions and AZ](https://app.notion.com/p/24ceb835a37d4358a984e8c4881a79d6).

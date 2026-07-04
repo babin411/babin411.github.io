@@ -6,8 +6,8 @@ author: 'Babin'
 pin: false
 math: false
 image:
-  path: /assets/img/aws-cloud-banner.png
-  alt: AWS cloud infrastructure banner
+  path: /assets/img/aws-s3-object-storage.svg
+  alt: Amazon S3 object storage overview
 ---
 
 Amazon S3, short for **Simple Storage Service**, is one of the most foundational AWS services. Along with services like EC2 and Lambda, S3 shows up in almost every real cloud architecture because applications constantly need somewhere durable, scalable, and inexpensive to store files.
@@ -105,6 +105,9 @@ Important point:
 
 - Object Lock must be enabled when the bucket is created.
 - Bucket versioning is required for Object Lock.
+
+![Created S3 bucket in the AWS console](/assets/img/aws/notion/s3/s3-bucket-created.png)
+_The created S3 bucket from the original Notion notes_
 
 ---
 
@@ -361,3 +364,7 @@ S3 is one of the most useful AWS services because it solves a simple problem ext
 | **Static website hosting** | Serves public static content from S3 |
 
 Once buckets, objects, keys, versioning, permissions, and storage classes make sense, S3 becomes much easier to reason about. It is not a file server. It is a durable object store, and many AWS architectures are built around that idea.
+
+## Source Notes
+
+Based on my Notion notes: [Exploring S3 Fundamentals - Object Storage in AWS](https://app.notion.com/p/1113b133921242b5924d783251066209).

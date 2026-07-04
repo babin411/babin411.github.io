@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#071426"/>
+  <rect x="82" y="96" width="1036" height="438" rx="28" fill="#0f2742" stroke="#38bdf8" stroke-width="4"/>
+  <text x="600" y="184" text-anchor="middle" fill="#e0f2fe" font-family="Arial, sans-serif" font-size="56" font-weight="700">Azure Data Factory</text>
+  <text x="600" y="246" text-anchor="middle" fill="#93c5fd" font-family="Arial, sans-serif" font-size="34">Fundamentals</text>
+  <g fill="#38bdf8">
+    <circle cx="316" cy="374" r="46"/><circle cx="600" cy="374" r="46"/><circle cx="884" cy="374" r="46"/>
+  </g>
+  <g stroke="#93c5fd" stroke-width="12" stroke-linecap="round">
+    <path d="M365 374h186"/><path d="M649 374h186"/>
+  </g>
+  <text x="316" y="461" text-anchor="middle" fill="#dbeafe" font-family="Arial, sans-serif" font-size="25">Factory</text>
+  <text x="600" y="461" text-anchor="middle" fill="#dbeafe" font-family="Arial, sans-serif" font-size="25">Pipeline</text>
+  <text x="884" y="461" text-anchor="middle" fill="#dbeafe" font-family="Arial, sans-serif" font-size="25">Activity</text>
+</svg>
