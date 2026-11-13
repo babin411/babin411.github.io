@@ -1,0 +1,551 @@
+<!DOCTYPE html><html lang="en" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover" ><meta name="generator" content="Jekyll v4.4.1" /><meta property="og:title" content="ELT with Spark SQL and Python in Databricks" /><meta name="author" content="Babin Joshi" /><meta property="og:locale" content="en" /><meta name="description" content="Extract, load, and transform (ELT) is a natural pattern for the lakehouse. Data is first loaded into inexpensive, scalable storage and is then transformed with the distributed processing capabilities of Apache Spark. In Databricks, Spark SQL and Python can be used together to inspect source files, create Delta tables, update records, and reshape nested data for analytics." /><meta name="twitter:description" property="og:description" content="Extract, load, and transform (ELT) is a natural pattern for the lakehouse. Data is first loaded into inexpensive, scalable storage and is then transformed with the distributed processing capabilities of Apache Spark. In Databricks, Spark SQL and Python can be used together to inspect source files, create Delta tables, update records, and reshape nested data for analytics." /><link rel="canonical" href="https://babin411.github.io/posts/ELT-with-Spark-SQL-and-PySpark-in-Databricks/" /><meta property="og:url" content="https://babin411.github.io/posts/ELT-with-Spark-SQL-and-PySpark-in-Databricks/" /><meta property="og:site_name" content="Babin Joshi" /><meta property="og:image" content="https://babin411.github.io/assets/img/databricks-elt-spark-sql.png" /><meta property="og:image:alt" content="Querying files with Spark SQL in Databricks" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2026-04-12T00:00:00+05:45" /><meta property="article:modified_time" content="2026-04-12T00:00:00+05:45" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:image" content="https://babin411.github.io/assets/img/databricks-elt-spark-sql.png" /><meta name="twitter:image:alt" content="Querying files with Spark SQL in Databricks" /><meta name="twitter:title" content="ELT with Spark SQL and Python in Databricks" /><meta name="twitter:site" content="@BabinJoshi411" /><meta name="twitter:creator" content="@BabinJoshi411" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Babin Joshi","url":"https://github.com/babin411"},"dateModified":"2026-04-12T00:00:00+05:45","datePublished":"2026-04-12T00:00:00+05:45","description":"Extract, load, and transform (ELT) is a natural pattern for the lakehouse. Data is first loaded into inexpensive, scalable storage and is then transformed with the distributed processing capabilities of Apache Spark. In Databricks, Spark SQL and Python can be used together to inspect source files, create Delta tables, update records, and reshape nested data for analytics.","headline":"ELT with Spark SQL and Python in Databricks","image":{"alt":"Querying files with Spark SQL in Databricks","url":"https://babin411.github.io/assets/img/databricks-elt-spark-sql.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://babin411.github.io/posts/ELT-with-Spark-SQL-and-PySpark-in-Databricks/"},"url":"https://babin411.github.io/posts/ELT-with-Spark-SQL-and-PySpark-in-Databricks/"}</script><title>ELT with Spark SQL and Python in Databricks | Babin Joshi</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Babin Joshi"><meta name="application-name" content="Babin Joshi"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.20.1/dist/tocbot.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get MODE_ATTR() { return "data-mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } static get ID() { return "mode-toggle"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } let self = this; /* always follow the system prefers */ this.sysDarkPrefers.addEventListener('change', () => { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.notify(); }); } /* constructor() */ get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode === ModeToggle.DARK_MODE; } get isLightMode() { return this.mode === ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer)) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } setDark() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_ATTR); sessionStorage.removeItem(ModeToggle.MODE_KEY); } /* Notify another plugins that the theme mode has changed */ notify() { window.postMessage({ direction: ModeToggle.ID, message: this.modeStatus }, "*"); } flipMode() { if (this.hasMode) { if (this.isSysDarkPrefer) { if (this.isLightMode) { this.clearMode(); } else { this.setLight(); } } else { if (this.isDarkMode) { this.clearMode(); } else { this.setDark(); } } } else { if (this.isSysDarkPrefer) { this.setLight(); } else { this.setDark(); } } this.notify(); } /* flipMode() */ } /* ModeToggle */ const modeToggle = new ModeToggle(); </script><body data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" class="mx-auto"> <img src="/assets/img/dp.png" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title"> <a href="/">Babin Joshi</a></div><div class="site-subtitle font-italic">Life is a cruel prank played on the living - Charles Boyle</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <button class="mode-toggle btn" aria-label="Switch Mode"> <i class="fas fa-adjust"></i> </button> <span class="icon-border"></span> <a href="https://github.com/babin411" aria-label="github" target="_blank" rel="noopener noreferrer"> <i class="fab fa-github"></i> </a> <a href="https://twitter.com/BabinJoshi411" aria-label="twitter" target="_blank" rel="noopener noreferrer"> <i class="fab fa-twitter"></i> </a> <a href="javascript:location.href = 'mailto:' + ['j.babin411','gmail.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a></div></div><div id="topbar-wrapper"><div id="topbar" class="container d-flex align-items-center justify-content-between h-100 pl-3 pr-3 pl-md-4 pr-md-4"> <span id="breadcrumb"> <span> <a href="/"> Home </a> </span> <span>ELT with Spark SQL and Python in Databricks</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper" class="d-flex justify-content-center"><div id="main" class="container pl-xl-4 pr-xl-4"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-9 pr-xl-4"><div class="post pl-1 pr-1 pl-md-2 pr-md-2"><h1 data-toc-skip>ELT with Spark SQL and Python in Databricks</h1><div class="post-meta text-muted"> <span> Posted <em class="" data-ts="1775931300" data-df="ll" data-toggle="tooltip" data-placement="bottom"> Apr 12, 2026 </em> </span><div class="mt-3 mb-3"> <a href="/assets/img/databricks-elt-spark-sql.png" class="popup img-link preview-img shimmer"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3C/svg%3E" data-src="/assets/img/databricks-elt-spark-sql.png" alt="Querying files with Spark SQL in Databricks" width="1200" height="630" class="lazyload" data-proofer-ignore></a><figcaption class="text-center pt-2 pb-2">Querying files with Spark SQL in Databricks</figcaption></div><div class="d-flex justify-content-between"> <span> By <em> <a href="https://github.com/babin411">Babin Joshi</a> </em> </span><div> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="3342 words"> <em>18 min</em> read</span></div></div></div><div class="post-content"><p>Extract, load, and transform (ELT) is a natural pattern for the lakehouse. Data is first loaded into inexpensive, scalable storage and is then transformed with the distributed processing capabilities of Apache Spark. In Databricks, Spark SQL and Python can be used together to inspect source files, create Delta tables, update records, and reshape nested data for analytics.</p><p>This walkthrough follows the complete bookstore exercise from the original notes. The dataset contains three related entities:</p><ul><li><code class="language-plaintext highlighter-rouge">customers</code>, supplied as JSON<li><code class="language-plaintext highlighter-rouge">books</code>, supplied as CSV<li><code class="language-plaintext highlighter-rouge">orders</code>, supplied as Parquet and containing a nested array of purchased books</ul><p><a href="/assets/img/databricks-elt-spark-sql.png" class="popup img-link "><img data-src="/assets/img/databricks-elt-spark-sql.png" alt="Querying files with Spark SQL" class="lazyload" data-proofer-ignore></a> <em>The original notebook starts by querying source files directly before creating tables.</em></p><blockquote><p>The examples retain the dataset variables and repository paths from the original training notebook. In a newer workspace, the same ideas can be applied with Unity Catalog volumes and workspace files.</p></blockquote><h2 id="querying-files-directly"><span class="mr-2">Querying Files Directly</span><a href="#querying-files-directly" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>Spark SQL can query supported files without first registering them as tables. The general syntax is:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">file_format</span><span class="p">.</span><span class="nv">`/path/to/file`</span><span class="p">;</span>
+</pre></table></code></div></div><p>The path must be enclosed in backticks. It can identify:</p><ul><li>one file<li>a group of files through a wildcard<li>a directory containing files of the same type and compatible schema</ul><p>For example:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">json</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/customers-json/export_001.json`</span><span class="p">;</span>
+</pre></table></code></div></div><p>To query every compatible JSON file in the directory, remove the individual filename:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">json</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/customers-json`</span><span class="p">;</span>
+</pre></table></code></div></div><p>This works especially well with self-describing formats such as JSON and Parquet because Spark can infer their schemas. Direct file queries are useful for exploration, but the notebook preview displays only the first 1,000 records. A preview should therefore not be treated as proof that the entire source contains only those rows.</p><p>CSV files are more difficult to query directly because important parsing details, such as whether a header exists and which delimiter is used, are not stored in the format itself. When file-reader options or a schema must be supplied, create a temporary view or external table instead.</p><h3 id="reading-raw-text-and-binary-files"><span class="mr-2">Reading Raw Text and Binary Files</span><a href="#reading-raw-text-and-binary-files" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>The <code class="language-plaintext highlighter-rouge">text</code> data source reads each record as a raw string in a column named <code class="language-plaintext highlighter-rouge">value</code>:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="nb">text</span><span class="p">.</span><span class="nv">`/path/to/text/files`</span><span class="p">;</span>
+</pre></table></code></div></div><p>It can be used with JSON, CSV, TSV, and plain-text files when the original content needs to be inspected without normal parsing. This is useful for corrupted records, irregular files, or custom parsing logic.</p><p>The <code class="language-plaintext highlighter-rouge">binaryFile</code> data source reads binary or unstructured files. Its result includes the path, modification time, length, and binary content:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">binaryFile</span><span class="p">.</span><span class="nv">`/path/to/binary/files`</span><span class="p">;</span>
+</pre></table></code></div></div><h2 id="creating-tables-with-ctas"><span class="mr-2">Creating Tables with CTAS</span><a href="#creating-tables-with-ctas" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p><code class="language-plaintext highlighter-rouge">CREATE TABLE AS SELECT</code>, usually called CTAS, creates a table from the result of a query:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">customers</span> <span class="k">AS</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">json</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/customers-json`</span><span class="p">;</span>
+</pre></table></code></div></div><p>CTAS automatically derives the table schema from the query result. A separate column declaration is unnecessary. In Databricks, a table created this way uses Delta by default unless another format is specified.</p><p>CTAS is a convenient way to copy Parquet or correctly parsed query results into a Delta table. It is less suitable when the source requires extra reader options. A direct CSV query, for example, cannot conveniently declare the header, delimiter, and schema in the CTAS statement.</p><h2 id="tables-against-external-data-sources"><span class="mr-2">Tables Against External Data Sources</span><a href="#tables-against-external-data-sources" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>The <code class="language-plaintext highlighter-rouge">USING</code> clause registers a table or view against an external data source. It supports reader options that a direct file query cannot express:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">books_external</span> <span class="p">(</span>
+  <span class="n">book_id</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">title</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">author</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">category</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">price</span> <span class="nb">DOUBLE</span>
+<span class="p">)</span>
+<span class="k">USING</span> <span class="n">CSV</span>
+<span class="k">OPTIONS</span> <span class="p">(</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">'${dataset.bookstore}/books-csv/export_*.csv'</span><span class="p">,</span>
+  <span class="n">header</span> <span class="o">=</span> <span class="s1">'true'</span><span class="p">,</span>
+  <span class="k">delimiter</span> <span class="o">=</span> <span class="s1">';'</span>
+<span class="p">);</span>
+</pre></table></code></div></div><p>An optional <code class="language-plaintext highlighter-rouge">LOCATION</code> can also point to the source path. Data is not moved when an external table is registered. The table continues to read the original files in their original format, so the example above is a CSV table rather than a Delta table.</p><p>This distinction matters. A table backed directly by CSV, JSON, JDBC, or another external source does not gain Delta Lake features merely because it can be queried from the metastore.</p><h3 id="jdbc-external-tables"><span class="mr-2">JDBC External Tables</span><a href="#jdbc-external-tables" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Spark SQL can register a relational database table through JDBC:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">users_jdbc</span>
+<span class="k">USING</span> <span class="n">JDBC</span>
+<span class="k">OPTIONS</span> <span class="p">(</span>
+  <span class="n">url</span> <span class="o">=</span> <span class="s1">'jdbc:postgresql://host:5432/database'</span><span class="p">,</span>
+  <span class="n">dbtable</span> <span class="o">=</span> <span class="s1">'public.users'</span><span class="p">,</span>
+  <span class="k">user</span> <span class="o">=</span> <span class="s1">'username'</span><span class="p">,</span>
+  <span class="n">password</span> <span class="o">=</span> <span class="s1">'password'</span>
+<span class="p">);</span>
+</pre></table></code></div></div><p>The connection options identify the JDBC URL, remote table, username, and password. In a real environment, credentials should be supplied through secrets or a governed connection instead of being written directly in a notebook.</p><p>A JDBC-backed table remains an external, non-Delta source. It does not provide Delta time travel or Delta transaction guarantees, and repeatedly scanning a very large remote table can be slow.</p><h3 id="temporary-view-followed-by-ctas"><span class="mr-2">Temporary View Followed by CTAS</span><a href="#temporary-view-followed-by-ctas" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>A useful pattern is to parse the source through a temporary view and then materialize the parsed result as Delta:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">TEMP</span> <span class="k">VIEW</span> <span class="n">books_tmp_vw</span> <span class="p">(</span>
+  <span class="n">book_id</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">title</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">author</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">category</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">price</span> <span class="nb">DOUBLE</span>
+<span class="p">)</span>
+<span class="k">USING</span> <span class="n">CSV</span>
+<span class="k">OPTIONS</span> <span class="p">(</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">'${dataset.bookstore}/books-csv/export_*.csv'</span><span class="p">,</span>
+  <span class="n">header</span> <span class="o">=</span> <span class="s1">'true'</span><span class="p">,</span>
+  <span class="k">delimiter</span> <span class="o">=</span> <span class="s1">';'</span>
+<span class="p">);</span>
+</pre></table></code></div></div><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">books</span> <span class="k">AS</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">books_tmp_vw</span><span class="p">;</span>
+</pre></table></code></div></div><p>The temporary view handles the CSV-specific schema and options. CTAS then writes its correctly parsed rows into a Delta table.</p><h2 id="querying-files-hands-on-lab"><span class="mr-2">Querying Files: Hands-On Lab</span><a href="#querying-files-hands-on-lab" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>The original lab initializes a bookstore dataset with a shared setup notebook:</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">%</span><span class="n">run</span> <span class="o">/</span><span class="n">Repos</span><span class="o">/</span><span class="n">babin</span><span class="nd">@azurefusemachines.onmicrosoft.com</span><span class="o">/</span><span class="n">Databricks</span><span class="o">-</span><span class="n">Certified</span><span class="o">-</span><span class="n">Data</span><span class="o">-</span><span class="n">Engineer</span><span class="o">-</span><span class="n">Associate</span><span class="o">/</span><span class="n">Includes</span><span class="o">/</span><span class="n">Copy</span><span class="o">-</span><span class="n">Datasets</span>
+</pre></table></code></div></div><p>The dataset contains customer JSON files, book CSV files, and order Parquet files.</p><h3 id="inspect-the-customer-files-with-python"><span class="mr-2">Inspect the Customer Files with Python</span><a href="#inspect-the-customer-files-with-python" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p><code class="language-plaintext highlighter-rouge">dbutils.fs.ls</code> lists the files in the customer directory:</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="o">%</span><span class="n">python</span>
+<span class="n">files</span> <span class="o">=</span> <span class="n">dbutils</span><span class="p">.</span><span class="n">fs</span><span class="p">.</span><span class="nf">ls</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="si">{</span><span class="n">dataset_bookstore</span><span class="si">}</span><span class="s">/customers-json</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">display</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+</pre></table></code></div></div><p>This Python step verifies the available files and their paths before SQL is used to read them.</p><h3 id="query-one-json-file"><span class="mr-2">Query One JSON File</span><a href="#query-one-json-file" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">json</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/customers-json/export_001.json`</span><span class="p">;</span>
+</pre></table></code></div></div><p>Spark infers the JSON schema and presents the fields as columns. The same syntax can be used with a wildcard to query a subset of filenames:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">json</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/customers-json/export_*.json`</span><span class="p">;</span>
+</pre></table></code></div></div><h3 id="query-the-complete-json-directory"><span class="mr-2">Query the Complete JSON Directory</span><a href="#query-the-complete-json-directory" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">json</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/customers-json`</span><span class="p">;</span>
+</pre></table></code></div></div><p>Spark reads all compatible files from the directory as one relation.</p><h3 id="create-the-customers-delta-table"><span class="mr-2">Create the Customers Delta Table</span><a href="#create-the-customers-delta-table" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TABLE</span> <span class="n">customers</span> <span class="k">AS</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">json</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/customers-json`</span><span class="p">;</span>
+</pre></table></code></div></div><p>The table schema is inferred from the query and the source records are written into Delta.</p><h3 id="inspect-the-book-csv-files"><span class="mr-2">Inspect the Book CSV Files</span><a href="#inspect-the-book-csv-files" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="o">%</span><span class="n">python</span>
+<span class="n">files</span> <span class="o">=</span> <span class="n">dbutils</span><span class="p">.</span><span class="n">fs</span><span class="p">.</span><span class="nf">ls</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="si">{</span><span class="n">dataset_bookstore</span><span class="si">}</span><span class="s">/books-csv</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">display</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+</pre></table></code></div></div><p>Unlike JSON, CSV does not carry a complete schema. Reading it without the correct options can treat the header as data, use the wrong separator, or assign every column a generic string type.</p><h3 id="parse-the-books-with-an-explicit-schema"><span class="mr-2">Parse the Books with an Explicit Schema</span><a href="#parse-the-books-with-an-explicit-schema" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TEMP</span> <span class="k">VIEW</span> <span class="n">books_tmp_vw</span> <span class="p">(</span>
+  <span class="n">book_id</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">title</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">author</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">category</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">price</span> <span class="nb">DOUBLE</span>
+<span class="p">)</span>
+<span class="k">USING</span> <span class="n">CSV</span>
+<span class="k">OPTIONS</span> <span class="p">(</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">'${dataset.bookstore}/books-csv/export_*.csv'</span><span class="p">,</span>
+  <span class="n">header</span> <span class="o">=</span> <span class="s1">'true'</span><span class="p">,</span>
+  <span class="k">delimiter</span> <span class="o">=</span> <span class="s1">';'</span>
+<span class="p">);</span>
+</pre></table></code></div></div><p>Validate the parsed records:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">books_tmp_vw</span><span class="p">;</span>
+</pre></table></code></div></div><p>Then create the Delta table:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TABLE</span> <span class="n">books</span> <span class="k">AS</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">books_tmp_vw</span><span class="p">;</span>
+</pre></table></code></div></div><h3 id="create-the-orders-table-from-parquet"><span class="mr-2">Create the Orders Table from Parquet</span><a href="#create-the-orders-table-from-parquet" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Parquet is self-describing, so it can feed CTAS directly:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TABLE</span> <span class="n">orders</span> <span class="k">AS</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">parquet</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/orders`</span><span class="p">;</span>
+</pre></table></code></div></div><p>At this point, all three bookstore entities are available as Delta tables.</p><h2 id="writing-to-delta-tables"><span class="mr-2">Writing to Delta Tables</span><a href="#writing-to-delta-tables" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>Delta tables support ACID transactions. Appends, overwrites, updates, deletes, and merges are committed atomically, which prevents readers from seeing a partially written table.</p><h3 id="insert-into"><span class="mr-2">INSERT INTO</span><a href="#insert-into" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p><code class="language-plaintext highlighter-rouge">INSERT INTO</code> appends query results to an existing table:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">orders</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">parquet</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/orders-new`</span><span class="p">;</span>
+</pre></table></code></div></div><p>Running the same append repeatedly writes the same rows repeatedly. The operation does not automatically identify duplicates, so the pipeline must determine whether a source record has already been processed.</p><p>Rows can also be supplied directly:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">customers</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="s1">'C9999'</span><span class="p">,</span> <span class="s1">'New Customer'</span><span class="p">,</span> <span class="s1">'new.customer@example.com'</span><span class="p">);</span>
+</pre></table></code></div></div><p>The values and their order must be compatible with the target schema.</p><h3 id="insert-overwrite"><span class="mr-2">INSERT OVERWRITE</span><a href="#insert-overwrite" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p><code class="language-plaintext highlighter-rouge">INSERT OVERWRITE</code> replaces the rows in an existing table with the result of a query:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">INSERT</span> <span class="n">OVERWRITE</span> <span class="n">customers</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">customers_corrected</span><span class="p">;</span>
+</pre></table></code></div></div><p>It differs from <code class="language-plaintext highlighter-rouge">CREATE OR REPLACE TABLE</code> in several useful ways:</p><ul><li>it only overwrites an existing table<li>it does not create a new table when the target is missing<li>the query result must match the current table schema<li>the table definition remains in place</ul><p>Overwriting is safer than manually deleting and recreating the table. The replacement is one atomic transaction, and the earlier version remains in Delta history so it can be queried through time travel.</p><h3 id="update-and-delete"><span class="mr-2">UPDATE and DELETE</span><a href="#update-and-delete" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Delta supports row-level changes:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">UPDATE</span> <span class="n">customers</span>
+<span class="k">SET</span> <span class="n">email</span> <span class="o">=</span> <span class="s1">'updated@example.com'</span>
+<span class="k">WHERE</span> <span class="n">customer_id</span> <span class="o">=</span> <span class="s1">'C0001'</span><span class="p">;</span>
+</pre></table></code></div></div><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">customers</span>
+<span class="k">WHERE</span> <span class="n">customer_id</span> <span class="o">=</span> <span class="s1">'C0001'</span><span class="p">;</span>
+</pre></table></code></div></div><p>These commands are useful for targeted corrections. When a source contains a mixture of new and changed records, <code class="language-plaintext highlighter-rouge">MERGE</code> is usually more appropriate.</p><h2 id="merge-into"><span class="mr-2">MERGE INTO</span><a href="#merge-into" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p><code class="language-plaintext highlighter-rouge">MERGE</code> compares a source table, view, or DataFrame with a target Delta table. It can insert, update, and delete rows in one atomic transaction.</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="n">MERGE</span> <span class="k">INTO</span> <span class="n">customers</span> <span class="k">AS</span> <span class="k">c</span>
+<span class="k">USING</span> <span class="n">customers_updates</span> <span class="k">AS</span> <span class="n">u</span>
+<span class="k">ON</span> <span class="k">c</span><span class="p">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="n">u</span><span class="p">.</span><span class="n">customer_id</span>
+<span class="k">WHEN</span> <span class="n">MATCHED</span> <span class="k">THEN</span>
+  <span class="k">UPDATE</span> <span class="k">SET</span> <span class="o">*</span>
+<span class="k">WHEN</span> <span class="k">NOT</span> <span class="n">MATCHED</span> <span class="k">THEN</span>
+  <span class="k">INSERT</span> <span class="o">*</span><span class="p">;</span>
+</pre></table></code></div></div><p>The <code class="language-plaintext highlighter-rouge">ON</code> clause defines how source rows match target rows. Each <code class="language-plaintext highlighter-rouge">WHEN</code> clause defines an action:</p><ul><li><code class="language-plaintext highlighter-rouge">WHEN MATCHED</code> can update or delete an existing target row<li><code class="language-plaintext highlighter-rouge">WHEN NOT MATCHED</code> can insert a new row<li>conditions can be added to make each action more selective</ul><p>The source should contain at most one row for each target key. If multiple source rows match one target row, the intended update becomes ambiguous.</p><h2 id="writing-to-tables-hands-on-lab"><span class="mr-2">Writing to Tables: Hands-On Lab</span><a href="#writing-to-tables-hands-on-lab" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><h3 id="append-new-orders"><span class="mr-2">Append New Orders</span><a href="#append-new-orders" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>The incoming order files can be appended to the <code class="language-plaintext highlighter-rouge">orders</code> table:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">orders</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">parquet</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/orders-new`</span><span class="p">;</span>
+</pre></table></code></div></div><p>Querying the table afterward confirms that the new rows have been added. Re-running the cell demonstrates the duplicate risk of a non-idempotent append.</p><h3 id="build-a-customer-update-view"><span class="mr-2">Build a Customer Update View</span><a href="#build-a-customer-update-view" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>The new customer JSON contains both updates to existing customers and entirely new customers:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TEMP</span> <span class="k">VIEW</span> <span class="n">customers_updates</span> <span class="k">AS</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">json</span><span class="p">.</span><span class="nv">`${dataset.bookstore}/customers-json-new`</span><span class="p">;</span>
+</pre></table></code></div></div><p>Inspect the staged changes:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">customers_updates</span><span class="p">;</span>
+</pre></table></code></div></div><h3 id="merge-customer-changes"><span class="mr-2">Merge Customer Changes</span><a href="#merge-customer-changes" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="n">MERGE</span> <span class="k">INTO</span> <span class="n">customers</span> <span class="k">AS</span> <span class="k">c</span>
+<span class="k">USING</span> <span class="n">customers_updates</span> <span class="k">AS</span> <span class="n">u</span>
+<span class="k">ON</span> <span class="k">c</span><span class="p">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="n">u</span><span class="p">.</span><span class="n">customer_id</span>
+<span class="k">WHEN</span> <span class="n">MATCHED</span> <span class="k">THEN</span>
+  <span class="k">UPDATE</span> <span class="k">SET</span> <span class="o">*</span>
+<span class="k">WHEN</span> <span class="k">NOT</span> <span class="n">MATCHED</span> <span class="k">THEN</span>
+  <span class="k">INSERT</span> <span class="o">*</span><span class="p">;</span>
+</pre></table></code></div></div><p>Matching customer IDs are updated, including changed email addresses. Customer IDs that do not yet exist are inserted.</p><h3 id="stage-and-merge-book-changes"><span class="mr-2">Stage and Merge Book Changes</span><a href="#stage-and-merge-book-changes" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>The book update files are CSV, so they need the same schema and parsing options as the original source:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TEMP</span> <span class="k">VIEW</span> <span class="n">books_updates</span> <span class="p">(</span>
+  <span class="n">book_id</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">title</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">author</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">category</span> <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">price</span> <span class="nb">DOUBLE</span>
+<span class="p">)</span>
+<span class="k">USING</span> <span class="n">CSV</span>
+<span class="k">OPTIONS</span> <span class="p">(</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">'${dataset.bookstore}/books-csv-new/export_*.csv'</span><span class="p">,</span>
+  <span class="n">header</span> <span class="o">=</span> <span class="s1">'true'</span><span class="p">,</span>
+  <span class="k">delimiter</span> <span class="o">=</span> <span class="s1">';'</span>
+<span class="p">);</span>
+</pre></table></code></div></div><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="n">MERGE</span> <span class="k">INTO</span> <span class="n">books</span> <span class="k">AS</span> <span class="n">b</span>
+<span class="k">USING</span> <span class="n">books_updates</span> <span class="k">AS</span> <span class="n">u</span>
+<span class="k">ON</span> <span class="n">b</span><span class="p">.</span><span class="n">book_id</span> <span class="o">=</span> <span class="n">u</span><span class="p">.</span><span class="n">book_id</span>
+<span class="k">WHEN</span> <span class="n">MATCHED</span> <span class="k">THEN</span>
+  <span class="k">UPDATE</span> <span class="k">SET</span> <span class="o">*</span>
+<span class="k">WHEN</span> <span class="k">NOT</span> <span class="n">MATCHED</span> <span class="k">THEN</span>
+  <span class="k">INSERT</span> <span class="o">*</span><span class="p">;</span>
+</pre></table></code></div></div><p>This applies changed book attributes and inserts new titles without replacing the complete table.</p><h2 id="working-with-nested-data"><span class="mr-2">Working with Nested Data</span><a href="#working-with-nested-data" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>Spark SQL has first-class support for complex types:</p><ul><li><code class="language-plaintext highlighter-rouge">STRUCT</code> groups named fields into one value<li><code class="language-plaintext highlighter-rouge">ARRAY</code> stores an ordered collection of values<li><code class="language-plaintext highlighter-rouge">MAP</code> stores key-value pairs</ul><p>The bookstore <code class="language-plaintext highlighter-rouge">orders</code> table contains a <code class="language-plaintext highlighter-rouge">books</code> array. Each element is a struct with details such as <code class="language-plaintext highlighter-rouge">book_id</code>, <code class="language-plaintext highlighter-rouge">quantity</code>, and <code class="language-plaintext highlighter-rouge">subtotal</code>.</p><h3 id="access-struct-fields"><span class="mr-2">Access Struct Fields</span><a href="#access-struct-fields" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Fields inside a struct can be selected with dot notation:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span>
+  <span class="n">order_id</span><span class="p">,</span>
+  <span class="n">books</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">book_id</span> <span class="k">AS</span> <span class="n">first_book_id</span><span class="p">,</span>
+  <span class="n">books</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">quantity</span> <span class="k">AS</span> <span class="n">first_book_quantity</span>
+<span class="k">FROM</span> <span class="n">orders</span><span class="p">;</span>
+</pre></table></code></div></div><p>Array indexes begin at zero. Selecting a fixed position is useful for inspection but not for processing every element.</p><h3 id="explode-an-array"><span class="mr-2">Explode an Array</span><a href="#explode-an-array" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p><code class="language-plaintext highlighter-rouge">explode</code> returns one output row for each array element:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span>
+  <span class="n">order_id</span><span class="p">,</span>
+  <span class="n">customer_id</span><span class="p">,</span>
+  <span class="n">explode</span><span class="p">(</span><span class="n">books</span><span class="p">)</span> <span class="k">AS</span> <span class="n">book</span>
+<span class="k">FROM</span> <span class="n">orders</span><span class="p">;</span>
+</pre></table></code></div></div><p>The resulting <code class="language-plaintext highlighter-rouge">book</code> column is still a struct. Its fields can be projected in another query:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span>
+  <span class="n">order_id</span><span class="p">,</span>
+  <span class="n">customer_id</span><span class="p">,</span>
+  <span class="n">book</span><span class="p">.</span><span class="n">book_id</span><span class="p">,</span>
+  <span class="n">book</span><span class="p">.</span><span class="n">quantity</span><span class="p">,</span>
+  <span class="n">book</span><span class="p">.</span><span class="n">subtotal</span>
+<span class="k">FROM</span> <span class="p">(</span>
+  <span class="k">SELECT</span>
+    <span class="n">order_id</span><span class="p">,</span>
+    <span class="n">customer_id</span><span class="p">,</span>
+    <span class="n">explode</span><span class="p">(</span><span class="n">books</span><span class="p">)</span> <span class="k">AS</span> <span class="n">book</span>
+  <span class="k">FROM</span> <span class="n">orders</span>
+<span class="p">);</span>
+</pre></table></code></div></div><p>This converts the nested order structure into an item-level relation.</p><h3 id="collect_set"><span class="mr-2">collect_set</span><a href="#collect_set" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p><code class="language-plaintext highlighter-rouge">collect_set</code> aggregates unique values into an array:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span>
+  <span class="n">customer_id</span><span class="p">,</span>
+  <span class="n">collect_set</span><span class="p">(</span><span class="n">books</span><span class="p">)</span> <span class="k">AS</span> <span class="n">books_set</span>
+<span class="k">FROM</span> <span class="n">orders</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">customer_id</span><span class="p">;</span>
+</pre></table></code></div></div><p>Because <code class="language-plaintext highlighter-rouge">books</code> is already an array, <code class="language-plaintext highlighter-rouge">books_set</code> is an array of arrays.</p><h3 id="flatten"><span class="mr-2">flatten</span><a href="#flatten" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p><code class="language-plaintext highlighter-rouge">flatten</code> removes one level of array nesting:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span>
+  <span class="n">customer_id</span><span class="p">,</span>
+  <span class="n">flatten</span><span class="p">(</span><span class="n">collect_set</span><span class="p">(</span><span class="n">books</span><span class="p">))</span> <span class="k">AS</span> <span class="n">books</span>
+<span class="k">FROM</span> <span class="n">orders</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">customer_id</span><span class="p">;</span>
+</pre></table></code></div></div><p>The result is one array of book structs for each customer rather than an array containing separate arrays from each order.</p><h2 id="joining-bookstore-data"><span class="mr-2">Joining Bookstore Data</span><a href="#joining-bookstore-data" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>Spark SQL supports the standard join types:</p><ul><li>inner<li>left<li>right<li>full outer<li>cross<li>left semi<li>left anti</ul><p>After exploding the order items, an inner join can enrich each item with its book title, author, category, and price:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre><span class="k">WITH</span> <span class="n">order_items</span> <span class="k">AS</span> <span class="p">(</span>
+  <span class="k">SELECT</span>
+    <span class="n">order_id</span><span class="p">,</span>
+    <span class="n">customer_id</span><span class="p">,</span>
+    <span class="n">explode</span><span class="p">(</span><span class="n">books</span><span class="p">)</span> <span class="k">AS</span> <span class="n">book</span>
+  <span class="k">FROM</span> <span class="n">orders</span>
+<span class="p">)</span>
+<span class="k">SELECT</span>
+  <span class="n">i</span><span class="p">.</span><span class="n">order_id</span><span class="p">,</span>
+  <span class="n">i</span><span class="p">.</span><span class="n">customer_id</span><span class="p">,</span>
+  <span class="n">i</span><span class="p">.</span><span class="n">book</span><span class="p">.</span><span class="n">book_id</span><span class="p">,</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">title</span><span class="p">,</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">author</span><span class="p">,</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">category</span><span class="p">,</span>
+  <span class="n">i</span><span class="p">.</span><span class="n">book</span><span class="p">.</span><span class="n">quantity</span><span class="p">,</span>
+  <span class="n">i</span><span class="p">.</span><span class="n">book</span><span class="p">.</span><span class="n">subtotal</span>
+<span class="k">FROM</span> <span class="n">order_items</span> <span class="k">AS</span> <span class="n">i</span>
+<span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">books</span> <span class="k">AS</span> <span class="n">b</span>
+  <span class="k">ON</span> <span class="n">i</span><span class="p">.</span><span class="n">book</span><span class="p">.</span><span class="n">book_id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">book_id</span><span class="p">;</span>
+</pre></table></code></div></div><p>The result can also be joined with <code class="language-plaintext highlighter-rouge">customers</code> on <code class="language-plaintext highlighter-rouge">customer_id</code> to add customer details.</p><p>A left semi join returns only rows from the left side that have a match:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="k">c</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span> <span class="n">customers</span> <span class="k">AS</span> <span class="k">c</span>
+<span class="k">LEFT</span> <span class="n">SEMI</span> <span class="k">JOIN</span> <span class="n">orders</span> <span class="k">AS</span> <span class="n">o</span>
+  <span class="k">ON</span> <span class="k">c</span><span class="p">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="n">o</span><span class="p">.</span><span class="n">customer_id</span><span class="p">;</span>
+</pre></table></code></div></div><p>A left anti join returns left-side rows without a match:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="k">c</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span> <span class="n">customers</span> <span class="k">AS</span> <span class="k">c</span>
+<span class="k">LEFT</span> <span class="n">ANTI</span> <span class="k">JOIN</span> <span class="n">orders</span> <span class="k">AS</span> <span class="n">o</span>
+  <span class="k">ON</span> <span class="k">c</span><span class="p">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="n">o</span><span class="p">.</span><span class="n">customer_id</span><span class="p">;</span>
+</pre></table></code></div></div><p>These joins are useful when only existence or non-existence matters and columns from the right side are unnecessary.</p><h2 id="set-operations"><span class="mr-2">Set Operations</span><a href="#set-operations" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>Set operations combine the results of compatible queries. Both sides must return the same number of columns with compatible types.</p><p><code class="language-plaintext highlighter-rouge">UNION</code> combines results and removes duplicate rows:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="n">customer_id</span>
+<span class="k">FROM</span> <span class="n">customers</span>
+<span class="k">WHERE</span> <span class="n">email</span> <span class="k">LIKE</span> <span class="s1">'%.com'</span>
+<span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="n">customer_id</span>
+<span class="k">FROM</span> <span class="n">orders</span><span class="p">;</span>
+</pre></table></code></div></div><p><code class="language-plaintext highlighter-rouge">UNION ALL</code> retains duplicates:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="n">customer_id</span> <span class="k">FROM</span> <span class="n">customers</span>
+<span class="k">UNION</span> <span class="k">ALL</span>
+<span class="k">SELECT</span> <span class="n">customer_id</span> <span class="k">FROM</span> <span class="n">orders</span><span class="p">;</span>
+</pre></table></code></div></div><p><code class="language-plaintext highlighter-rouge">INTERSECT</code> returns rows that appear in both results:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="n">customer_id</span> <span class="k">FROM</span> <span class="n">customers</span>
+<span class="k">INTERSECT</span>
+<span class="k">SELECT</span> <span class="n">customer_id</span> <span class="k">FROM</span> <span class="n">orders</span><span class="p">;</span>
+</pre></table></code></div></div><p><code class="language-plaintext highlighter-rouge">MINUS</code>, also available as <code class="language-plaintext highlighter-rouge">EXCEPT</code>, returns rows from the first result that are absent from the second:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="n">customer_id</span> <span class="k">FROM</span> <span class="n">customers</span>
+<span class="n">MINUS</span>
+<span class="k">SELECT</span> <span class="n">customer_id</span> <span class="k">FROM</span> <span class="n">orders</span><span class="p">;</span>
+</pre></table></code></div></div><p>The last query identifies customers who have not placed an order.</p><h2 id="reshaping-results-with-pivot"><span class="mr-2">Reshaping Results with PIVOT</span><a href="#reshaping-results-with-pivot" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p><code class="language-plaintext highlighter-rouge">PIVOT</code> turns distinct row values into columns. Its first argument is an aggregation expression. The <code class="language-plaintext highlighter-rouge">FOR</code> subclause identifies the pivot column, and <code class="language-plaintext highlighter-rouge">IN</code> lists the values that should become output columns.</p><p>The following example reports quantities by selected book IDs:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre><span class="k">WITH</span> <span class="n">order_items</span> <span class="k">AS</span> <span class="p">(</span>
+  <span class="k">SELECT</span>
+    <span class="n">customer_id</span><span class="p">,</span>
+    <span class="n">book</span><span class="p">.</span><span class="n">book_id</span> <span class="k">AS</span> <span class="n">book_id</span><span class="p">,</span>
+    <span class="n">book</span><span class="p">.</span><span class="n">quantity</span> <span class="k">AS</span> <span class="n">quantity</span>
+  <span class="k">FROM</span> <span class="n">orders</span>
+  <span class="k">LATERAL</span> <span class="k">VIEW</span> <span class="n">explode</span><span class="p">(</span><span class="n">books</span><span class="p">)</span> <span class="n">exploded</span> <span class="k">AS</span> <span class="n">book</span>
+<span class="p">)</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">order_items</span>
+<span class="n">PIVOT</span> <span class="p">(</span>
+  <span class="k">sum</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span>
+  <span class="k">FOR</span> <span class="n">book_id</span> <span class="k">IN</span> <span class="p">(</span><span class="s1">'B01'</span><span class="p">,</span> <span class="s1">'B02'</span><span class="p">,</span> <span class="s1">'B03'</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></table></code></div></div><p>The same idea can pivot another known category, such as book category, after joining order items to the <code class="language-plaintext highlighter-rouge">books</code> table.</p><h2 id="advanced-transformations-hands-on-lab"><span class="mr-2">Advanced Transformations: Hands-On Lab</span><a href="#advanced-transformations-hands-on-lab" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>The advanced lab brings the previous operations together:</p><ol><li>Query <code class="language-plaintext highlighter-rouge">orders</code> and inspect the <code class="language-plaintext highlighter-rouge">books</code> array of structs.<li>Access one array element and its named struct fields.<li>Use <code class="language-plaintext highlighter-rouge">explode</code> to produce one row per purchased book.<li>Use <code class="language-plaintext highlighter-rouge">collect_set</code> to gather each customer’s unique order arrays.<li>Use <code class="language-plaintext highlighter-rouge">flatten</code> to turn the array of arrays into one book array.<li>Join exploded items to <code class="language-plaintext highlighter-rouge">books</code> for titles, authors, categories, and prices.<li>Join orders to <code class="language-plaintext highlighter-rouge">customers</code> for customer information.<li>Use semi and anti joins when only matching or non-matching customers are needed.<li>Combine compatible results with <code class="language-plaintext highlighter-rouge">UNION</code>, <code class="language-plaintext highlighter-rouge">INTERSECT</code>, and <code class="language-plaintext highlighter-rouge">MINUS</code>.<li>Pivot an aggregated measure across a known group of values.</ol><p>The important theme is that nested data can either be preserved and processed as arrays or normalized into rows. The correct choice depends on the next operation.</p><h2 id="higher-order-functions"><span class="mr-2">Higher-Order Functions</span><a href="#higher-order-functions" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>Exploding is not always necessary. Higher-order functions apply expressions directly to elements of an array while preserving the outer row.</p><h3 id="filter"><span class="mr-2">filter</span><a href="#filter" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>The <code class="language-plaintext highlighter-rouge">filter</code> function keeps array elements that satisfy a lambda expression. This query retains books for which at least two copies were purchased:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span>
+  <span class="n">order_id</span><span class="p">,</span>
+  <span class="n">books</span><span class="p">,</span>
+  <span class="n">filter</span><span class="p">(</span><span class="n">books</span><span class="p">,</span> <span class="n">book</span> <span class="o">-&gt;</span> <span class="n">book</span><span class="p">.</span><span class="n">quantity</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="k">AS</span> <span class="n">multiple_copies</span>
+<span class="k">FROM</span> <span class="n">orders</span><span class="p">;</span>
+</pre></table></code></div></div><p>Orders with no matching elements receive an empty array. To remove them, calculate the array first and apply <code class="language-plaintext highlighter-rouge">size</code> in an outer query:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="p">(</span>
+  <span class="k">SELECT</span>
+    <span class="n">order_id</span><span class="p">,</span>
+    <span class="n">customer_id</span><span class="p">,</span>
+    <span class="n">filter</span><span class="p">(</span><span class="n">books</span><span class="p">,</span> <span class="n">book</span> <span class="o">-&gt;</span> <span class="n">book</span><span class="p">.</span><span class="n">quantity</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="k">AS</span> <span class="n">multiple_copies</span>
+  <span class="k">FROM</span> <span class="n">orders</span>
+<span class="p">)</span>
+<span class="k">WHERE</span> <span class="k">size</span><span class="p">(</span><span class="n">multiple_copies</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></table></code></div></div><p>The subquery is necessary because the <code class="language-plaintext highlighter-rouge">WHERE</code> clause cannot directly reuse a select-list alias at the same query level.</p><h3 id="transform"><span class="mr-2">transform</span><a href="#transform" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p><code class="language-plaintext highlighter-rouge">transform</code> returns a new array by applying an expression to every element. The following calculation applies a ten-percent discount to each book subtotal:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span>
+  <span class="n">order_id</span><span class="p">,</span>
+  <span class="k">transform</span><span class="p">(</span>
+    <span class="n">books</span><span class="p">,</span>
+    <span class="n">book</span> <span class="o">-&gt;</span> <span class="n">book</span><span class="p">.</span><span class="n">subtotal</span> <span class="o">*</span> <span class="mi">0</span><span class="p">.</span><span class="mi">90</span>
+  <span class="p">)</span> <span class="k">AS</span> <span class="n">discounted_subtotals</span>
+<span class="k">FROM</span> <span class="n">orders</span><span class="p">;</span>
+</pre></table></code></div></div><p>Each input book produces one transformed value, so the result maintains the relationship between the order and its items.</p><h2 id="sql-user-defined-functions"><span class="mr-2">SQL User-Defined Functions</span><a href="#sql-user-defined-functions" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>A SQL UDF packages reusable Spark SQL logic as a named function.</p><h3 id="build-a-url-from-an-email-address"><span class="mr-2">Build a URL from an Email Address</span><a href="#build-a-url-from-an-email-address" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>The first function splits an email address at <code class="language-plaintext highlighter-rouge">@</code>, takes the domain at array index <code class="language-plaintext highlighter-rouge">1</code>, and prefixes it with <code class="language-plaintext highlighter-rouge">http://</code>:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">FUNCTION</span> <span class="n">get_url</span><span class="p">(</span><span class="n">email</span> <span class="n">STRING</span><span class="p">)</span>
+<span class="k">RETURNS</span> <span class="n">STRING</span>
+<span class="k">RETURN</span> <span class="n">concat</span><span class="p">(</span><span class="s1">'http://'</span><span class="p">,</span> <span class="n">split</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="s1">'@'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]);</span>
+</pre></table></code></div></div><p>Use it like a built-in function:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span>
+  <span class="n">customer_id</span><span class="p">,</span>
+  <span class="n">email</span><span class="p">,</span>
+  <span class="n">get_url</span><span class="p">(</span><span class="n">email</span><span class="p">)</span> <span class="k">AS</span> <span class="n">website</span>
+<span class="k">FROM</span> <span class="n">customers</span><span class="p">;</span>
+</pre></table></code></div></div><p>Unlike a temporary view, a SQL UDF is persisted in the current database or schema. It can be called from other notebooks and sessions that have access to it.</p><p>Inspect its definition and metadata:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="k">DESCRIBE</span> <span class="k">FUNCTION</span> <span class="n">get_url</span><span class="p">;</span>
+</pre></table></code></div></div><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="k">DESCRIBE</span> <span class="k">FUNCTION</span> <span class="n">EXTENDED</span> <span class="n">get_url</span><span class="p">;</span>
+</pre></table></code></div></div><h3 id="categorize-an-email-extension"><span class="mr-2">Categorize an Email Extension</span><a href="#categorize-an-email-extension" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>A second UDF can use <code class="language-plaintext highlighter-rouge">CASE WHEN</code> and <code class="language-plaintext highlighter-rouge">LIKE</code> to classify email domains:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">FUNCTION</span> <span class="n">site_type</span><span class="p">(</span><span class="n">email</span> <span class="n">STRING</span><span class="p">)</span>
+<span class="k">RETURNS</span> <span class="n">STRING</span>
+<span class="k">RETURN</span> <span class="k">CASE</span>
+  <span class="k">WHEN</span> <span class="n">email</span> <span class="k">LIKE</span> <span class="s1">'%.com'</span> <span class="k">THEN</span> <span class="s1">'Commercial'</span>
+  <span class="k">WHEN</span> <span class="n">email</span> <span class="k">LIKE</span> <span class="s1">'%.org'</span> <span class="k">THEN</span> <span class="s1">'Organization'</span>
+  <span class="k">WHEN</span> <span class="n">email</span> <span class="k">LIKE</span> <span class="s1">'%.edu'</span> <span class="k">THEN</span> <span class="s1">'Educational'</span>
+  <span class="k">ELSE</span> <span class="s1">'Unknown'</span>
+<span class="k">END</span><span class="p">;</span>
+</pre></table></code></div></div><p>Apply it to the customer table:</p><div class="language-sql highlighter-rouge"><div class="code-header"> <span data-label-text="Sql"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="k">SELECT</span>
+  <span class="n">customer_id</span><span class="p">,</span>
+  <span class="n">email</span><span class="p">,</span>
+  <span class="n">site_type</span><span class="p">(</span><span class="n">email</span><span class="p">)</span> <span class="k">AS</span> <span class="n">site_type</span>
+<span class="k">FROM</span> <span class="n">customers</span><span class="p">;</span>
+</pre></table></code></div></div><p>SQL UDFs use Spark SQL expressions and participate in Spark’s distributed execution. They are useful when the same business rule appears in many queries, although a built-in function should still be preferred when one already provides the required behavior.</p><h2 id="higher-order-functions-and-udfs-hands-on-lab"><span class="mr-2">Higher-Order Functions and UDFs: Hands-On Lab</span><a href="#higher-order-functions-and-udfs-hands-on-lab" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>The final lab again initializes the bookstore dataset and works through these steps:</p><ol><li>Inspect the <code class="language-plaintext highlighter-rouge">orders.books</code> array of structs.<li>Use <code class="language-plaintext highlighter-rouge">filter</code> to retain items with a quantity of two or more.<li>Use a subquery and <code class="language-plaintext highlighter-rouge">size</code> to exclude empty filtered arrays.<li>Use <code class="language-plaintext highlighter-rouge">transform</code> to calculate a discounted subtotal for every book.<li>Create <code class="language-plaintext highlighter-rouge">get_url</code> by splitting the customer’s email address.<li>Apply <code class="language-plaintext highlighter-rouge">get_url</code> to the <code class="language-plaintext highlighter-rouge">customers</code> table.<li>Inspect the function with both forms of <code class="language-plaintext highlighter-rouge">DESCRIBE FUNCTION</code>.<li>Create the conditional email-extension classification function.<li>Apply that function to every customer.</ol><h2 id="what-this-elt-workflow-demonstrates"><span class="mr-2">What This ELT Workflow Demonstrates</span><a href="#what-this-elt-workflow-demonstrates" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>The complete notebook moves through the main stages of a lakehouse ELT pipeline:</p><ol><li>Inspect source directories with Python utilities.<li>Query JSON and Parquet directly with Spark SQL.<li>Supply explicit schemas and options for CSV.<li>Materialize correctly parsed data as Delta tables.<li>Append new batches with <code class="language-plaintext highlighter-rouge">INSERT INTO</code>.<li>Replace table contents transactionally with <code class="language-plaintext highlighter-rouge">INSERT OVERWRITE</code>.<li>Apply inserts and updates atomically with <code class="language-plaintext highlighter-rouge">MERGE</code>.<li>Navigate structs and arrays without flattening them prematurely.<li>Use <code class="language-plaintext highlighter-rouge">explode</code>, <code class="language-plaintext highlighter-rouge">collect_set</code>, and <code class="language-plaintext highlighter-rouge">flatten</code> when row-level processing is needed.<li>Enrich and compare datasets with joins and set operations.<li>Reshape aggregates with <code class="language-plaintext highlighter-rouge">PIVOT</code>.<li>Process arrays in place with <code class="language-plaintext highlighter-rouge">filter</code> and <code class="language-plaintext highlighter-rouge">transform</code>.<li>Package repeated SQL logic as persistent UDFs.</ol><p>Together, these techniques form a practical foundation for transforming raw bookstore files into reliable, queryable Delta tables.</p><h2 id="source"><span class="mr-2">Source</span><a href="#source" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>Based on my Notion notes: <a href="https://app.notion.com/p/9cd85a41c97d42bbb90b605b790e489e">3. ELT with SparkSQL and Python</a>.</p></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/data-engineering/'>Data Engineering</a>, <a href='/categories/databricks/'>Databricks</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/databricks/" class="post-tag no-text-decoration" >databricks</a> <a href="/tags/spark-sql/" class="post-tag no-text-decoration" >spark sql</a> <a href="/tags/python/" class="post-tag no-text-decoration" >python</a> <a href="/tags/elt/" class="post-tag no-text-decoration" >elt</a> <a href="/tags/delta-lake/" class="post-tag no-text-decoration" >delta lake</a> <a href="/tags/merge/" class="post-tag no-text-decoration" >merge</a> <a href="/tags/arrays/" class="post-tag no-text-decoration" >arrays</a> <a href="/tags/udf/" class="post-tag no-text-decoration" >udf</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=ELT%20with%20Spark%20SQL%20and%20Python%20in%20Databricks%20-%20Babin%20Joshi&url=https%3A%2F%2Fbabin411.github.io%2Fposts%2FELT-with-Spark-SQL-and-PySpark-in-Databricks%2F" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=ELT%20with%20Spark%20SQL%20and%20Python%20in%20Databricks%20-%20Babin%20Joshi&u=https%3A%2F%2Fbabin411.github.io%2Fposts%2FELT-with-Spark-SQL-and-PySpark-in-Databricks%2F" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https%3A%2F%2Fbabin411.github.io%2Fposts%2FELT-with-Spark-SQL-and-PySpark-in-Databricks%2F&text=ELT%20with%20Spark%20SQL%20and%20Python%20in%20Databricks%20-%20Babin%20Joshi" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="Copy link" data-title-succeed="Link copied successfully!"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">Recently Updated</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/Artificial-Neural-Network/">Artificial Neural Network (ANN / MLP)</a><li><a href="/posts/Convolutinal-Neural-Network/">Convolutional Neural Network (CNN / ConvNet)</a><li><a href="/posts/6sql2/">Database Schemas</a><li><a href="/posts/Getting-Started-with-Cloud-and-AWS/">Getting Started with Cloud and AWS — Regions, Availability Zones & IAM</a><li><a href="/posts/Getting-up-and-running-with-Virtual-Servers-in-AWS-EC2/">Getting up and running with Virtual Servers in AWS EC2</a></ul></div><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/adf/">adf</a> <a class="post-tag" href="/tags/azure-data-factory/">azure data factory</a> <a class="post-tag" href="/tags/azure/">azure</a> <a class="post-tag" href="/tags/data-engineering/">data engineering</a> <a class="post-tag" href="/tags/sql/">sql</a> <a class="post-tag" href="/tags/t-sql/">t-sql</a> <a class="post-tag" href="/tags/python/">python</a> <a class="post-tag" href="/tags/mongodb/">mongodb</a> <a class="post-tag" href="/tags/aws/">aws</a> <a class="post-tag" href="/tags/cloud/">cloud</a></div></div></div><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">Contents</div><nav id="toc"></nav></div><script src="https://cdn.jsdelivr.net/npm/tocbot@4.20.1/dist/tocbot.min.js"></script></div></div><div class="row"><div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 pl-3 pr-3 pr-xl-4 mt-5"><div id="related-posts" class="mb-2 mb-sm-4"><h3 class="pt-2 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/Databricks-Lakehouse-and-Delta-Lake-Fundamentals/"><div class="card-body"> <em class="small" data-ts="1772648100" data-df="ll" > Mar 5, 2026 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Databricks Lakehouse Platform and Delta Lake - Complete Guide</h3><div class="text-muted small"><p> Delta Lake is the open storage framework that gives lakehouse tables reliable transactions, schema controls, version history, and data-management operations while keeping data in cloud object stora...</p></div></div></a></div><div class="card"> <a href="/posts/Introduction-to-Databricks-and-the-Lakehouse/"><div class="card-body"> <em class="small" data-ts="1770660900" data-df="ll" > Feb 10, 2026 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Introduction to Databricks, Lakehouse Architecture, and Compute</h3><div class="text-muted small"><p> Databricks is a multi-cloud data and AI platform built around Apache Spark. It provides a common workspace for data engineering, analytics, business intelligence, streaming, machine learning, and g...</p></div></div></a></div><div class="card"> <a href="/posts/Incremental-Data-Processing-with-Databricks/"><div class="card-body"> <em class="small" data-ts="1778177700" data-df="ll" > May 8, 2026 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Incremental Data Processing with Structured Streaming and Auto Loader</h3><div class="text-muted small"><p> A data stream is any data source that grows over time. It may be a directory receiving files, a Kafka topic, a CDC feed, or a Delta table receiving new commits. Spark Structured Streaming processe...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/Databricks-Lakehouse-and-Delta-Lake-Fundamentals/" class="btn btn-outline-primary" prompt="Older"><p>Databricks Lakehouse Platform and Delta Lake - Complete Guide</p></a> <a href="/posts/Incremental-Data-Processing-with-Databricks/" class="btn btn-outline-primary" prompt="Newer"><p>Incremental Data Processing with Structured Streaming and Auto Loader</p></a></div></div></div></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/adf/">adf</a> <a class="post-tag" href="/tags/azure-data-factory/">azure data factory</a> <a class="post-tag" href="/tags/azure/">azure</a> <a class="post-tag" href="/tags/data-engineering/">data engineering</a> <a class="post-tag" href="/tags/sql/">sql</a> <a class="post-tag" href="/tags/t-sql/">t-sql</a> <a class="post-tag" href="/tags/python/">python</a> <a class="post-tag" href="/tags/mongodb/">mongodb</a> <a class="post-tag" href="/tags/aws/">aws</a> <a class="post-tag" href="/tags/cloud/">cloud</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><footer><div class="container pl-lg-4 pr-lg-4"><div class="d-flex justify-content-between align-items-center text-muted ml-md-3 mr-md-3"><div class="footer-left"><p class="mb-0"> © 2026 <a href="https://twitter.com/Babinjoshi411">Babin Joshi</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0">Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></div></footer><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/lazysizes@5.3.2/lazysizes.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1/dayjs.min.js,npm/dayjs@1/locale/en.min.js,npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1/plugin/localizedFormat.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.bundle.min.js"></script> <script defer src="/unregister.js"></script>

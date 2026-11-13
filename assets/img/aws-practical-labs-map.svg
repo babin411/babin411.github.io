@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Practical AWS lab map</title>
+  <desc id="desc">Overview diagram of practical AWS labs: S3 static hosting, EC2 Flask, Glue ETL, Lambda to RDS, and API Gateway.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102030"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7dd3fc"/>
+    </marker>
+    <style>
+      .title { font: 700 32px Arial, sans-serif; fill: #f8fafc; }
+      .label { font: 700 23px Arial, sans-serif; fill: #f8fafc; }
+      .small { font: 500 17px Arial, sans-serif; fill: #cbd5e1; }
+      .box { fill: #172554; stroke: #60a5fa; stroke-width: 2.5; rx: 10; }
+      .data { fill: #14352d; stroke: #5eead4; stroke-width: 2.5; rx: 10; }
+      .compute { fill: #3b2f16; stroke: #fbbf24; stroke-width: 2.5; rx: 10; }
+      .line { stroke: #7dd3fc; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1200" height="680" fill="url(#bg)"/>
+  <text x="54" y="72" class="title">Practical AWS Lab Sessions</text>
+  <text x="54" y="108" class="small">Small labs that build toward application and data engineering patterns</text>
+
+  <rect x="70" y="190" width="220" height="112" class="data"/>
+  <text x="118" y="235" class="label">S3 Static Site</text>
+  <text x="112" y="267" class="small">HTML, CSS, images</text>
+
+  <rect x="70" y="410" width="220" height="112" class="compute"/>
+  <text x="116" y="455" class="label">EC2 Flask App</text>
+  <text x="106" y="487" class="small">Linux, SSH, Python</text>
+
+  <rect x="490" y="190" width="220" height="112" class="compute"/>
+  <text x="552" y="235" class="label">Glue ETL</text>
+  <text x="520" y="267" class="small">Crawler, catalog, job</text>
+
+  <rect x="490" y="410" width="220" height="112" class="data"/>
+  <text x="526" y="455" class="label">Lambda to RDS</text>
+  <text x="522" y="487" class="small">S3 event ingestion</text>
+
+  <rect x="885" y="300" width="235" height="112" class="box"/>
+  <text x="935" y="345" class="label">API Gateway</text>
+  <text x="922" y="377" class="small">Managed API front door</text>
+
+  <path d="M290 246 L490 246" class="line"/>
+  <path d="M290 466 L490 466" class="line"/>
+  <path d="M710 246 C800 246 795 356 885 356" class="line"/>
+  <path d="M710 466 C800 466 795 356 885 356" class="line"/>
+</svg>
