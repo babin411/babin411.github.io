@@ -82,7 +82,7 @@ The objective of the Convolution Operation is to extract the high-level features
 
 There are two types of results to the operation — one in which the convolved feature is reduced in dimensionality as compared to the input, and the other in which the dimensionality is either increased or remains the same. This is done by applying Valid Padding in case of the former, or Same Padding in the case of the latter.
 
-![](https://miro.medium.com/max/790/1*nYf_cUIHFEWU1JXGwnz-Ig.gif 'abc')
+![Same padding](https://miro.medium.com/max/790/1*nYf_cUIHFEWU1JXGwnz-Ig.gif 'Same padding')
 
 When we augment the 5x5x1 image into a 6x6x1 image and then apply the 3x3x1 kernel over it, we find that the convolved matrix turns out to be of dimensions 5x5x1. Hence the name — Same Padding.
 

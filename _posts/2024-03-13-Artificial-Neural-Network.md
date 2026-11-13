@@ -218,7 +218,7 @@ The above equation means how the gradient is calculated. Here alpha is step size
 - It moves towards the lower weight and updates the value of the coefficients.
 - The process repeats until the local minimum is reached. A local minimum is a point beyond which it can not proceed.
 
-![image.png](attachment:image.png)
+<!-- ![image.png](attachment:image.png) -->
 
 **Disadvantages of Gradient Descent:**
 - Gradient descent works best for most purposes. However, it has some downsides too. It is expensive to calculate the gradients if the size of the data is huge. Gradient descent works well for convex functions but it doesn’t know how far to travel along the gradient for nonconvex functions.
@@ -240,7 +240,7 @@ As discussed in th earlier section, we have learned that **Stochastic Gradient D
 
 What the momentum does is helps in faster convergence of the loss function. Stochastic gradient descent oscillates between either direction of the gradient and updates the weights accordingly. However, adding a fraction of the previous update to the current update will make the process a bit faster. **One thing that should be remembered while using this algorithm is that the learning rate should be decreased with a high momentum term.**
 
-![image.png](attachment:image.png)
+<!-- ![image.png](attachment:image.png) -->
 
 
 In the above image, the left part shows the convergence graph of the stochastic gradient descent algorithm. At the same time, the right side shows SGD with momentum. From the image, you can compare the path chosen by both the algorithms and realize that using momentum helps reach convergence in less time.**You might be thinking of using a large momentum and learning rate to make the process even faster. But remember that while increasing the momentum, the possibility of passing the optimal minimum also increases. This might result in poor accuracy and even more oscillations.**
